@@ -39,7 +39,6 @@ def make_table(parent1, parent2):
 	return table
 
 def print_table(table, c1, c2): # formats and prints Punnett square
-	print len(c1[0])
 	divlength = (len(c1[0])*2+4)*2**(len(c1[0]))
 	print '',
 	for a in c2:
