@@ -16,6 +16,22 @@
 
 # The author can be reached by email at catherine.moresco@gmail.com.
 
+import os
+import re
+
+
+
+def headtex():
+	f= open('table.tex', 'w')
+	f.write('\\begin{table}[]\n\\centering\n\\caption{My caption}\n\\label{my-label}\n')
+	f.close()
+	
+def foottex():
+	f= open('table.tex', 'a')
+	f.write('\n\\end{tabular}\n\\end{table}')
+	f.close()
+		
+	
 def get_all_combinations(parent): # Finds all possible combinations of alleles a parent can pass on to their offspring, assuming independen assortment.
 	if len(parent) == 1:
 		return [parent[0][0], parent[0][1]]
@@ -39,19 +55,31 @@ def make_table(parent1, parent2):
 	return table
 
 def print_table(table, c1, c2): # formats and prints Punnett square
+	f= open('table.tex', 'a') # open the file
 	divlength = (len(c1[0])*2+4)*2**(len(c1[0]))
 	print '',
+	f.write('& ')
 	for a in c2:
 		print ' '*(len(c1[0])+3) + a + '',
+		f.write('& ' + a + ' ')
 	print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
-	for row in table:
+	f.write('\\\ \n& ')
+	
+	for i, row in enumerate(table):
 		print c1[table.index(row)],
+		f.write(c1[table.index(row)] + ' ')
 		print '|',
+		f.write('& ')
 		for cell in row:
 			print cell + ' | ',
+			f.write(cell + ' & ')
 		print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
-
+		if i != len(table)-1:
+			f.write('\\\ \n& ')
+	
 def print_genotype_frequencies(table): # calculates frequencies for each genotype present in table
+	f= open('table.tex', 'a') # open the file
+	f.write('\n')
 	calculated = []
 	genotypes = [a for b in table for a in b]
 	for x in genotypes:
@@ -61,6 +89,7 @@ def print_genotype_frequencies(table): # calculates frequencies for each genotyp
 				count += 1
 		if sorted(x) not in calculated:
 			print "The frequency of the " + x + " genotype is " + str(float(count)/float((len(genotypes)))*100) + "%."
+			f.write("The frequency of the " + x + " genotype is " + str(float(count)/float((len(genotypes)))*100) + "\\%.\n")
 		calculated.append(sorted(x))
 
 
@@ -68,10 +97,12 @@ print 'Hello, and welcome to the Punnett square maker! To get started, enter the
 while True:
 	p1 = raw_input("Please enter the genotype of the first parent: ").split(' ')
 	p2 = raw_input("Please enter the gentype of the second parent: ").split(' ')
+	headtex()
 	c1 = get_all_combinations(p1)
 	c2 = get_all_combinations(p2)
 	a = make_table(c1, c2)
 	print_table(a, c1, c2)
+	foottex()
 	print_genotype_frequencies(a)
 	action = raw_input("Enter (Q) to quit, or (A) to make another!\n")
 	if action == "Q":
