@@ -16,18 +16,22 @@
 
 # The author can be reached by email at catherine.moresco@gmail.com.
 
-import os
-import re
-
-
+import datetime
 
 def headtex():
-	f= open('table.tex', 'w')
-	f.write('\\begin{table}[]\n\\centering\n\\caption{My caption}\n\\label{my-label}\n')
+	f= open(name, 'w')
+	f.write('\\begin{table}[]\n\\centering\n\\caption{Punnet square}\n\\label{punnetsquare}\n')
 	f.close()
 	
+def freqhead():
+	f= open(name, 'a')
+	f.write('\\begin{table}[]\n\\centering\n\\caption{Genotypes frequencies}\n\\label{genotypesfreq}\n')
+	f.write('\\begin{tabular}{ll}\n\\hline\n')
+	f.write('Genotypes & Frequencies \\\ \\hline ')
+	f.close
+		
 def foottex():
-	f= open('table.tex', 'a')
+	f= open(name, 'a')
 	f.write('\n\\end{tabular}\n\\end{table}')
 	f.close()
 		
@@ -55,55 +59,65 @@ def make_table(parent1, parent2):
 	return table
 
 def print_table(table, c1, c2): # formats and prints Punnett square
-	f= open('table.tex', 'a') # open the file
+	f= open(name, 'a') # open the file
 	divlength = (len(c1[0])*2+4)*2**(len(c1[0]))
 	print '',
-	f.write('& ')
 	for a in c2:
 		print ' '*(len(c1[0])+3) + a + '',
 		f.write('& ' + a + ' ')
 	print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
-	f.write('\\\ \n& ')
+	f.write('\\\ \n\\hline\n')
 	
 	for i, row in enumerate(table):
 		print c1[table.index(row)],
-		f.write(c1[table.index(row)] + ' ')
+		f.write(c1[table.index(row)] + ' & ')
 		print '|',
-		f.write('& ')
-		for cell in row:
+		for j, cell in enumerate(row):
 			print cell + ' | ',
-			f.write(cell + ' & ')
+			if j != len(row)-1:
+				f.write(cell + ' & ')
+			else:
+				f.write(cell + ' ')
 		print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
 		if i != len(table)-1:
-			f.write('\\\ \n& ')
+			f.write('\\\ \n')	
 	
 def print_genotype_frequencies(table): # calculates frequencies for each genotype present in table
-	f= open('table.tex', 'a') # open the file
+	f= open(name, 'a') # open the file
 	f.write('\n')
 	calculated = []
 	genotypes = [a for b in table for a in b]
-	for x in genotypes:
+	for k, x in enumerate(genotypes):
 		count = 0
 		for y in genotypes:
 			if sorted(x) == sorted(y):
 				count += 1
 		if sorted(x) not in calculated:
 			print "The frequency of the " + x + " genotype is " + str(float(count)/float((len(genotypes)))*100) + "%."
-			f.write("The frequency of the " + x + " genotype is " + str(float(count)/float((len(genotypes)))*100) + "\\%.\n")
+			f.write(x + ' & ' + str(float(count)/float((len(genotypes)))*100) + '\\% \\\ \\hline \n')				
 		calculated.append(sorted(x))
 
 
-print 'Hello, and welcome to the Punnett square maker! To get started, enter the genotype of the first parent. There should be two alleles for each gene, and each should be represented by one letter. The genes should be separated by spaces. For example, a valid genotype would be "Xx Yy zz", while "XxYyZz" would not.'
+print 'Hello, and welcome to the Punnett square maker! To get started, enter the genotype of the first parent. There should be two alleles for each gene, and each should be represented by one letter. The genes should be separated by spaces. For example, a valid genotype would be "Xx Yy zz", while "XxYyZz" or "Xx Yy zz " would not.'
 while True:
+	now = datetime.datetime.now() # Date & time
+	name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H:%M")) # Give a name for the file 
 	p1 = raw_input("Please enter the genotype of the first parent: ").split(' ')
 	p2 = raw_input("Please enter the gentype of the second parent: ").split(' ')
 	headtex()
 	c1 = get_all_combinations(p1)
 	c2 = get_all_combinations(p2)
+	
+	f= open(name, 'a')
+	f.write('\\begin{tabular}{l|' + 'l'*max(len(c1), len(c2)) + '}\n\\hline\n')
+	f.close()
+	
 	a = make_table(c1, c2)
 	print_table(a, c1, c2)
 	foottex()
+	freqhead()
 	print_genotype_frequencies(a)
+	foottex()
 	action = raw_input("Enter (Q) to quit, or (A) to make another!\n")
 	if action == "Q":
 		quit()
