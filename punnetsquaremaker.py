@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # The author can be reached by email at catherine.moresco@gmail.com.
+# Improved with Latex tables by Remyslab, email at remyslab@laposte.net.
 
 import datetime
 
@@ -61,6 +62,7 @@ def make_table(parent1, parent2):
 def print_table(table, c1, c2): # formats and prints Punnett square
 	f= open(name, 'a') # open the file
 	divlength = (len(c1[0])*2+4)*2**(len(c1[0]))
+	print ''
 	print '',
 	for a in c2:
 		print ' '*(len(c1[0])+3) + a + '',
@@ -97,11 +99,17 @@ def print_genotype_frequencies(table): # calculates frequencies for each genotyp
 			f.write(x + ' & ' + str(float(count)/float((len(genotypes)))*100) + '\\% \\\ \\hline \n')				
 		calculated.append(sorted(x))
 
-
-print 'Hello, and welcome to the Punnett square maker! To get started, enter the genotype of the first parent. There should be two alleles for each gene, and each should be represented by one letter. The genes should be separated by spaces. For example, a valid genotype would be "Xx Yy zz", while "XxYyZz" or "Xx Yy zz " would not.'
+print '' 
+print '==========   Punnet square maker & Latex table export  =============='
+print '' 
+print 'Hello, and welcome to the Punnett square maker! To get started, enter the genotypes of each parent. There should be two alleles for each gene, and each should be represented by one letter.'
+print 'The genes should be separated by spaces. For example, a valid genotype would be "Xx Yy zz", while "XxYyZz" or "Xx Yy zz " would not.'
+print '' 
+print '====================================================================='
+print ''
 while True:
 	now = datetime.datetime.now() # Date & time
-	name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H:%M")) # Give a name for the file 
+	name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H-%M-%S")) # Give a name for the file 
 	p1 = raw_input("Please enter the genotype of the first parent: ").split(' ')
 	p2 = raw_input("Please enter the gentype of the second parent: ").split(' ')
 	headtex()
@@ -118,6 +126,11 @@ while True:
 	freqhead()
 	print_genotype_frequencies(a)
 	foottex()
-	action = raw_input("Enter (Q) to quit, or (A) to make another!\n")
-	if action == "Q":
+	print '' 
+	print 'Your Latex file ' + name + ' is saved in your script repertory !\n'
+	action = raw_input("Enter (A) to make another or (Q) to quit !\n")
+	if action == "A":
+		print ''
+		print "Again !\n"
+	else:	
 		quit()
