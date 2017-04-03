@@ -21,7 +21,7 @@ import datetime
 
 def headtex():
 	f= open(name, 'w')
-	f.write('\\begin{table}[]\n\\centering\n\\caption{Punnet square}\n\\label{punnetsquare}\n')
+	f.write('\\begin{table}[]\n\\centering\n\\caption{Punnett square}\n\\label{punnettsquare}\n')
 	f.close()
 	
 def freqhead():
@@ -100,7 +100,7 @@ def print_genotype_frequencies(table): # calculates frequencies for each genotyp
 		calculated.append(sorted(x))
 
 print '' 
-print '==========   Punnet square maker & Latex table export  =============='
+print '==========   Punnett square maker & Latex table export  =============='
 print '' 
 print 'Hello, and welcome to the Punnett square maker! To get started, enter the genotypes of each parent. There should be two alleles for each gene, and each should be represented by one letter.'
 print 'The genes should be separated by spaces. For example, a valid genotype would be "Xx Yy zz", while "XxYyZz" or "Xx Yy zz " would not.'
