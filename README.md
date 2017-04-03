@@ -2,7 +2,7 @@
 
 A Python2 / Python3 program which creates Punnett squares and calculates potential offspring genotype frequencies.
 
-![Punnett]((https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Punnett_square_mendel_flowers.svg/240px-Punnett_square_mendel_flowers.svg.png)
+![Punnett](https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Punnett_square_mendel_flowers.svg/240px-Punnett_square_mendel_flowers.svg.png)
 
 *Schema : Madeleine Price Ball*
 
