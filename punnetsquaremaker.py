@@ -20,21 +20,20 @@
 import datetime
 
 def headtex():
-	f= open(name, 'w')
-	f.write('\\begin{table}[]\n\\centering\n\\caption{Punnett square}\n\\label{punnettsquare}\n')
-	f.close()
+	head = '\\begin{table}[]\n\\centering\n\\caption{Punnett square}\n\\label{punnettsquare}\n'
+	return head
+	
+def width(c1, c2):
+	w = '\\begin{tabular}{l|' + 'l'*max(len(c1), len(c2)) + '}\n\\hline\n'
+	return w
 	
 def freqhead():
-	f= open(name, 'a')
-	f.write('\\begin{table}[]\n\\centering\n\\caption{Genotypes frequencies}\n\\label{genotypesfreq}\n')
-	f.write('\\begin{tabular}{ll}\n\\hline\n')
-	f.write('Genotypes & Frequencies \\\ \\hline ')
-	f.close
+	freqhead = '\\begin{table}[]\n\\centering\n\\caption{Genotypes frequencies}\n\\label{genotypesfreq}\n\\begin{tabular}{ll}\n\\hline\nGenotypes & Frequencies \\\ \\hline'
+	return freqhead
 		
 def foottex():
-	f= open(name, 'a')
-	f.write('\n\\end{tabular}\n\\end{table}')
-	f.close()
+	foot = '\n\\end{tabular}\n\\end{table}'
+	return foot
 		
 	
 def get_all_combinations(parent): # Finds all possible combinations of alleles a parent can pass on to their offspring, assuming independen assortment.
@@ -60,33 +59,34 @@ def make_table(parent1, parent2):
 	return table
 
 def print_table(table, c1, c2): # formats and prints Punnett square
-	f= open(name, 'a') # open the file
+	latextable = []
 	divlength = (len(c1[0])*2+4)*2**(len(c1[0]))
 	print ''
 	print '',
 	for a in c2:
 		print ' '*(len(c1[0])+3) + a + '',
-		f.write('& ' + a + ' ')
+		latextable.append('& ' + a + ' ')
 	print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
-	f.write('\\\ \n\\hline\n')
+	latextable.append('\\\ \n\\hline\n')
 	
 	for i, row in enumerate(table):
 		print c1[table.index(row)],
-		f.write(c1[table.index(row)] + ' & ')
+		latextable.append(c1[table.index(row)] + ' & ')
 		print '|',
 		for j, cell in enumerate(row):
 			print cell + ' | ',
 			if j != len(row)-1:
-				f.write(cell + ' & ')
+				latextable.append(cell + ' & ')
 			else:
-				f.write(cell + ' ')
+				latextable.append(cell + ' ')
 		print '\n' + ' '*(len(c1[0])+1) + '-'*(divlength)
 		if i != len(table)-1:
-			f.write('\\\ \n')	
+			latextable.append('\\\ \n')	
+	return latextable		
 	
 def print_genotype_frequencies(table): # calculates frequencies for each genotype present in table
-	f= open(name, 'a') # open the file
-	f.write('\n')
+	freqtable = []
+	freqtable.append('\n')
 	calculated = []
 	genotypes = [a for b in table for a in b]
 	for k, x in enumerate(genotypes):
@@ -96,8 +96,9 @@ def print_genotype_frequencies(table): # calculates frequencies for each genotyp
 				count += 1
 		if sorted(x) not in calculated:
 			print "The frequency of the " + x + " genotype is " + str(float(count)/float((len(genotypes)))*100) + "%."
-			f.write(x + ' & ' + str(float(count)/float((len(genotypes)))*100) + '\\% \\\ \\hline \n')				
+			freqtable.append(x + ' & ' + str(float(count)/float((len(genotypes)))*100) + '\\% \\\ \\hline \n')	
 		calculated.append(sorted(x))
+	return freqtable	
 
 print '' 
 print '==========   Punnett square maker & Latex table export  =============='
@@ -108,29 +109,33 @@ print ''
 print '====================================================================='
 print ''
 while True:
-	now = datetime.datetime.now() # Date & time
-	name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H-%M-%S")) # Give a name for the file 
 	p1 = raw_input("Please enter the genotype of the first parent: ").split(' ')
 	p2 = raw_input("Please enter the gentype of the second parent: ").split(' ')
-	headtex()
 	c1 = get_all_combinations(p1)
 	c2 = get_all_combinations(p2)
-	
-	f= open(name, 'a')
-	f.write('\\begin{tabular}{l|' + 'l'*max(len(c1), len(c2)) + '}\n\\hline\n')
-	f.close()
-	
 	a = make_table(c1, c2)
-	print_table(a, c1, c2)
-	foottex()
-	freqhead()
-	print_genotype_frequencies(a)
-	foottex()
-	print '' 
-	print 'Your Latex file ' + name + ' is saved in your script repertory !\n'
-	action = raw_input("Enter (A) to make another or (Q) to quit !\n")
+	latextable = print_table(a, c1, c2)
+	freqtable = print_genotype_frequencies(a)
+	option = raw_input("Enter (S) to save your tables in a .tex file, or another key to continue.\n")
+	if option == "S":
+		now = datetime.datetime.now() # Date & time
+		name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H-%M-%S")) # Give a name for the file 
+		f = open(name, 'w') # Open the file once
+		f.write(headtex())
+		f.write(width(c1, c2))
+		for item in latextable:
+			f.write("%s" % item)
+		f.write(foottex())
+		f.write(freqhead())
+		for item in freqtable:
+			f.write("%s" % item)
+		f.write(foottex())
+		f.close()
+		print '' 
+		print 'Your Latex file ' + name + ' is saved in your script repertory!\n'
+	action = raw_input("Enter (A) to make another or any key to quit!\n")
 	if action == "A":
 		print ''
-		print "Again !\n"
+		print "Again!\n"
 	else:	
 		quit()
