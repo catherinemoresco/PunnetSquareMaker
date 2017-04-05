@@ -1,4 +1,4 @@
-Punnett Square Maker
+PunnettSquareMaker
 ============================
 
 A Python2 / Python3 program which creates Punnett squares and calculates potential offspring genotype frequencies.

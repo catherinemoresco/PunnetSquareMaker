@@ -116,10 +116,11 @@ while True:
 	a = make_table(c1, c2)
 	latextable = print_table(a, c1, c2)
 	freqtable = print_genotype_frequencies(a)
-	option = raw_input("Enter (S) to save your tables in a .tex file, or another key to continue.\n")
+	print ''
+	option = raw_input("Enter (S) to save your tables in a *.tex file, or any key to continue without saving.\n")
 	if option == "S":
 		now = datetime.datetime.now() # Date & time
-		name = '%s_table.tex'%(now.strftime("%Y-%m-%d_%H-%M-%S")) # Give a name for the file 
+		name = '%s_table.tex' % (now.strftime("%Y-%m-%d_%H-%M-%S")) # Give a name with date
 		f = open(name, 'w') # Open the file once
 		f.write(headtex())
 		f.write(width(c1, c2))
